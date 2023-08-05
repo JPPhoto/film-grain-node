@@ -7,10 +7,12 @@ from pydantic import BaseModel, Field
 from invokeai.app.models.image import (
     ImageField,
     ResourceOrigin,
-    ImageCategory
+    ImageCategory,
 )
 
 from invokeai.app.util.misc import SEED_MAX, get_random_seed
+
+from invokeai.app.invocations.image import ImageOutput
 
 from invokeai.app.invocations.baseinvocation import (
     BaseInvocation,
@@ -23,17 +25,6 @@ import random
 
 from PIL import Image, ImageChops, ImageFilter
 import numpy as np
-
-class FilmGrainOutput(BaseInvocationOutput):
-    """Used to add film grain to an Image."""
-
-    # fmt: off
-    type: Literal["film_grain_output"] = "film_grain_output"
-    image: ImageField = Field(description="The image with film grain")
-    # fmt: on
-
-    class Config:
-        schema_extra = { "required": [ "type", "image" ] }
 
 class FilmGrainInvocation(BaseInvocation):
     """Adds film grain to an image"""
@@ -52,7 +43,7 @@ class FilmGrainInvocation(BaseInvocation):
     class Config(InvocationConfig):
         schema_extra = { "ui": { "title": "FilmGrain", "tags": [ "film_grain" ] } }
 
-    def invoke(self, context: InvocationContext) -> FilmGrainOutput:
+    def invoke(self, context: InvocationContext) -> ImageOutput:
         image = context.services.images.get_pil_image(self.image.image_name)
         mode = image.mode
 
@@ -87,4 +78,8 @@ class FilmGrainInvocation(BaseInvocation):
             metadata=None,
         )
 
-        return FilmGrainOutput(image=ImageField(image_name=image_dto.image_name))
+        return ImageOutput(
+            image=ImageField(image_name=image_dto.image_name),
+            width=image.width,
+            height=image.height
+        )
