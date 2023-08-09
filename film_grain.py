@@ -50,6 +50,9 @@ class FilmGrainInvocation(BaseInvocation):
         if mode == "RGBA":
             image = image.convert('RGB')
 
+        # Save the state for any other apps that use it, recall it down below...
+        prev_rng_state = np.random.get_state()
+
         np.random.seed(seed=self.seed_1 if self.seed_1 is not None else get_random_seed())
         noise_1 = np.random.normal(0, 1, (image.size[1], image.size[0], 3)) * 127.5 * (self.amount_1 / 800.0)
         noise_1 = noise_1 + 127.5
@@ -61,6 +64,9 @@ class FilmGrainInvocation(BaseInvocation):
         noise_2 = noise_2 + 127.5
         noise_2 = Image.fromarray(noise_2.astype("uint8"), 'RGB');
         noise_2 = noise_2.filter(ImageFilter.GaussianBlur(radius=self.blur_2))
+
+        # Now that we've generated random noise, restore the state to what it initially was...
+        np.random.set_state(prev_rng_state)
 
         image = ImageChops.overlay(image, noise_1)
         image = ImageChops.overlay(image, noise_2)
