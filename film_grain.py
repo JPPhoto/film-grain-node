@@ -1,14 +1,12 @@
 # Copyright (c) 2023 Jonathan S. Pollack (https://github.com/JPPhoto)
 
-from typing import Literal, Optional
+from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-from invokeai.app.models.image import (
-    ImageField,
-    ResourceOrigin,
-    ImageCategory,
-)
+from invokeai.app.invocations.primitives import ImageField, ImageOutput
+
+from invokeai.app.models.image import ResourceOrigin, ImageCategory
 
 from invokeai.app.util.misc import SEED_MAX, get_random_seed
 
@@ -17,8 +15,10 @@ from invokeai.app.invocations.image import ImageOutput
 from invokeai.app.invocations.baseinvocation import (
     BaseInvocation,
     BaseInvocationOutput,
+    InputField,
     InvocationContext,
-    InvocationConfig,
+    invocation,
+    OutputField,
 )
 
 import random
@@ -26,22 +26,17 @@ import random
 from PIL import Image, ImageChops, ImageFilter
 import numpy as np
 
+@invocation("film_grain", title="FilmGrain", tags=["film_grain"])
 class FilmGrainInvocation(BaseInvocation):
     """Adds film grain to an image"""
 
-    # fmt: off
-    type: Literal["film_grain"] = "film_grain"
-    image: ImageField = Field(description="The image to add film grain to", default=None)
-    amount_1: int = Field(ge=0, le=800, description="Amount of the first noise layer", default=100)
-    amount_2: int = Field(ge=0, le=800, description="Amount of the second noise layer", default=50)
-    seed_1: Optional[int] = Field(ge=0, le=SEED_MAX, description="The first seed to use (omit for random)")
-    seed_2: Optional[int] = Field(ge=0, le=SEED_MAX, description="The second seed to use (omit for random)")
-    blur_1: float = Field(ge=0, le=100, description="The strength of the first noise blur", default=0.5)
-    blur_2: float = Field(ge=0, le=100, description="The strength of the second noise blur", default=0.5)
-    # fmt: on
-
-    class Config(InvocationConfig):
-        schema_extra = { "ui": { "title": "FilmGrain", "tags": [ "film_grain" ] } }
+    image: ImageField = InputField(description="The image to add film grain to", default=None)
+    amount_1: int = InputField(ge=0, le=800, description="Amount of the first noise layer", default=100)
+    amount_2: int = InputField(ge=0, le=800, description="Amount of the second noise layer", default=50)
+    seed_1: Optional[int] = InputField(ge=0, le=SEED_MAX, description="The first seed to use (omit for random)")
+    seed_2: Optional[int] = InputField(ge=0, le=SEED_MAX, description="The second seed to use (omit for random)")
+    blur_1: float = InputField(ge=0, le=100, description="The strength of the first noise blur", default=0.5)
+    blur_2: float = InputField(ge=0, le=100, description="The strength of the second noise blur", default=0.5)
 
     def invoke(self, context: InvocationContext) -> ImageOutput:
         image = context.services.images.get_pil_image(self.image.image_name)
@@ -76,6 +71,7 @@ class FilmGrainInvocation(BaseInvocation):
             session_id=context.graph_execution_state_id,
             is_intermediate=self.is_intermediate,
             metadata=None,
+            workflow=self.workflow,
         )
 
         return ImageOutput(
