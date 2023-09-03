@@ -10,8 +10,6 @@ from invokeai.app.models.image import ResourceOrigin, ImageCategory
 
 from invokeai.app.util.misc import SEED_MAX, get_random_seed
 
-from invokeai.app.invocations.image import ImageOutput
-
 from invokeai.app.invocations.baseinvocation import (
     BaseInvocation,
     BaseInvocationOutput,
