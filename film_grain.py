@@ -24,7 +24,8 @@ import random
 from PIL import Image, ImageChops, ImageFilter
 import numpy as np
 
-@invocation("film_grain", title="FilmGrain", tags=["film_grain"])
+
+@invocation("film_grain", title="FilmGrain", tags=["film_grain"], version="1.0.0")
 class FilmGrainInvocation(BaseInvocation):
     """Adds film grain to an image"""
 
@@ -75,5 +76,5 @@ class FilmGrainInvocation(BaseInvocation):
         return ImageOutput(
             image=ImageField(image_name=image_dto.image_name),
             width=image.width,
-            height=image.height
+            height=image.height,
         )
