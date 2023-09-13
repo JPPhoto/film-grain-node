@@ -1,28 +1,23 @@
 # Copyright (c) 2023 Jonathan S. Pollack (https://github.com/JPPhoto)
 
+import random
 from typing import Optional
 
+import numpy as np
+from PIL import Image, ImageChops, ImageFilter
 from pydantic import BaseModel
-
-from invokeai.app.invocations.primitives import ImageField, ImageOutput
-
-from invokeai.app.models.image import ResourceOrigin, ImageCategory
-
-from invokeai.app.util.misc import SEED_MAX, get_random_seed
 
 from invokeai.app.invocations.baseinvocation import (
     BaseInvocation,
     BaseInvocationOutput,
     InputField,
     InvocationContext,
-    invocation,
     OutputField,
+    invocation,
 )
-
-import random
-
-from PIL import Image, ImageChops, ImageFilter
-import numpy as np
+from invokeai.app.invocations.primitives import ImageField, ImageOutput
+from invokeai.app.models.image import ImageCategory, ResourceOrigin
+from invokeai.app.util.misc import SEED_MAX, get_random_seed
 
 
 @invocation("film_grain", title="FilmGrain", tags=["film_grain"], version="1.0.0")
@@ -42,25 +37,25 @@ class FilmGrainInvocation(BaseInvocation):
         mode = image.mode
 
         if mode == "RGBA":
-            image = image.convert('RGB')
+            image = image.convert("RGB")
 
         rng = np.random.default_rng(seed=self.seed_1 if self.seed_1 is not None else get_random_seed())
         noise_1 = rng.normal(0, 1, (image.size[1], image.size[0], 3)) * 127.5 * (self.amount_1 / 800.0)
         noise_1 = noise_1 + 127.5
-        noise_1 = Image.fromarray(noise_1.astype("uint8"), 'RGB');
+        noise_1 = Image.fromarray(noise_1.astype("uint8"), "RGB")
         noise_1 = noise_1.filter(ImageFilter.GaussianBlur(radius=self.blur_1))
 
         rng = np.random.default_rng(seed=self.seed_2 if self.seed_2 is not None else get_random_seed())
         noise_2 = rng.normal(0, 1, (image.size[1], image.size[0], 3)) * 127.5 * (self.amount_2 / 800.0)
         noise_2 = noise_2 + 127.5
-        noise_2 = Image.fromarray(noise_2.astype("uint8"), 'RGB');
+        noise_2 = Image.fromarray(noise_2.astype("uint8"), "RGB")
         noise_2 = noise_2.filter(ImageFilter.GaussianBlur(radius=self.blur_2))
 
         image = ImageChops.overlay(image, noise_1)
         image = ImageChops.overlay(image, noise_2)
 
         if mode == "RGBA":
-            image = image.convert('RGBA')
+            image = image.convert("RGBA")
 
         image_dto = context.services.images.create(
             image=image,
