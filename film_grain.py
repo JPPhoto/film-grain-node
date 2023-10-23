@@ -13,15 +13,17 @@ from invokeai.app.invocations.baseinvocation import (
     InputField,
     InvocationContext,
     OutputField,
+    WithMetadata,
+    WithWorkflow,
     invocation,
 )
 from invokeai.app.invocations.primitives import ImageField, ImageOutput
-from invokeai.app.models.image import ImageCategory, ResourceOrigin
+from invokeai.app.services.image_records.image_records_common import ImageCategory, ResourceOrigin
 from invokeai.app.util.misc import SEED_MAX, get_random_seed
 
 
-@invocation("film_grain", title="FilmGrain", tags=["film_grain"], version="1.0.0")
-class FilmGrainInvocation(BaseInvocation):
+@invocation("film_grain", title="FilmGrain", tags=["film_grain"], version="1.0.1")
+class FilmGrainInvocation(BaseInvocation, WithMetadata, WithWorkflow):
     """Adds film grain to an image"""
 
     image: ImageField = InputField(description="The image to add film grain to", default=None)
@@ -64,7 +66,7 @@ class FilmGrainInvocation(BaseInvocation):
             node_id=self.id,
             session_id=context.graph_execution_state_id,
             is_intermediate=self.is_intermediate,
-            metadata=None,
+            metadata=self.metadata,
             workflow=self.workflow,
         )
 
