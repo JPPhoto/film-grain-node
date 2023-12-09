@@ -8,7 +8,6 @@ from invokeai.app.invocations.baseinvocation import (
     InputField,
     InvocationContext,
     WithMetadata,
-    WithWorkflow,
     invocation,
 )
 from invokeai.app.invocations.primitives import ImageField, ImageOutput
@@ -18,7 +17,7 @@ from PIL import Image, ImageChops, ImageFilter
 
 
 @invocation("film_grain", title="FilmGrain", tags=["film_grain"], version="1.0.1")
-class FilmGrainInvocation(BaseInvocation, WithMetadata, WithWorkflow):
+class FilmGrainInvocation(BaseInvocation, WithMetadata):
     """Adds film grain to an image"""
 
     image: ImageField = InputField(description="The image to add film grain to", default=None)
@@ -62,7 +61,7 @@ class FilmGrainInvocation(BaseInvocation, WithMetadata, WithWorkflow):
             session_id=context.graph_execution_state_id,
             is_intermediate=self.is_intermediate,
             metadata=self.metadata,
-            workflow=self.workflow,
+            workflow=context.workflow,
         )
 
         return ImageOutput(
@@ -73,7 +72,7 @@ class FilmGrainInvocation(BaseInvocation, WithMetadata, WithWorkflow):
 
 
 @invocation("monochrome_film_grain", title="MonochromeFilmGrain", tags=["film_grain", "monochrome"], version="1.0.0")
-class MonochromeFilmGrainInvocation(BaseInvocation, WithMetadata, WithWorkflow):
+class MonochromeFilmGrainInvocation(BaseInvocation, WithMetadata):
     """Adds monochrome film grain to an image"""
 
     image: ImageField = InputField(description="The image to add film grain to", default=None)
@@ -119,7 +118,7 @@ class MonochromeFilmGrainInvocation(BaseInvocation, WithMetadata, WithWorkflow):
             session_id=context.graph_execution_state_id,
             is_intermediate=self.is_intermediate,
             metadata=self.metadata,
-            workflow=self.workflow,
+            workflow=context.workflow,
         )
 
         return ImageOutput(
