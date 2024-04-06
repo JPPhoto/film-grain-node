@@ -5,7 +5,6 @@ from typing import Optional
 import numpy as np
 from PIL import Image, ImageChops, ImageFilter
 
-from invokeai.app.invocations.fields import WithBoard
 from invokeai.invocation_api import (
     SEED_MAX,
     BaseInvocation,
@@ -13,13 +12,14 @@ from invokeai.invocation_api import (
     ImageOutput,
     InputField,
     InvocationContext,
+    WithBoard,
     WithMetadata,
     get_random_seed,
     invocation,
 )
 
 
-@invocation("film_grain", title="FilmGrain", tags=["film_grain"], version="1.1.1")
+@invocation("film_grain", title="FilmGrain", tags=["film_grain"], version="1.1.2")
 class FilmGrainInvocation(BaseInvocation, WithMetadata, WithBoard):
     """Adds film grain to an image"""
 
@@ -61,7 +61,7 @@ class FilmGrainInvocation(BaseInvocation, WithMetadata, WithBoard):
         return ImageOutput.build(image_dto)
 
 
-@invocation("monochrome_film_grain", title="MonochromeFilmGrain", tags=["film_grain", "monochrome"], version="1.1.1")
+@invocation("monochrome_film_grain", title="MonochromeFilmGrain", tags=["film_grain", "monochrome"], version="1.1.2")
 class MonochromeFilmGrainInvocation(BaseInvocation, WithMetadata, WithBoard):
     """Adds monochrome film grain to an image"""
 
