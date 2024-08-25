@@ -1,1 +1,1 @@
-from .film_grain import FilmGrainInvocation
+from .film_grain import FilmGrainInvocation, MonochromeFilmGrainInvocation

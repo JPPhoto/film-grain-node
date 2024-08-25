@@ -1,4 +1,4 @@
-# Copyright (c) 2023 Jonathan S. Pollack (https://github.com/JPPhoto)
+# Copyright (c) 2024 Jonathan S. Pollack (https://github.com/JPPhoto)
 
 from typing import Optional
 
