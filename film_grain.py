@@ -19,11 +19,11 @@ from invokeai.invocation_api import (
 )
 
 
-@invocation("film_grain", title="FilmGrain", tags=["film_grain"], version="1.1.2")
+@invocation("film_grain", title="FilmGrain", tags=["film_grain"], version="1.1.3")
 class FilmGrainInvocation(BaseInvocation, WithMetadata, WithBoard):
     """Adds film grain to an image"""
 
-    image: ImageField = InputField(description="The image to add film grain to", default=None)
+    image: ImageField = InputField(description="The image to add film grain to")
     amount_1: int = InputField(ge=0, le=800, description="Amount of the first noise layer", default=100)
     amount_2: int = InputField(ge=0, le=800, description="Amount of the second noise layer", default=50)
     seed_1: Optional[int] = InputField(ge=0, le=SEED_MAX, description="The first seed to use (omit for random)")
@@ -61,11 +61,11 @@ class FilmGrainInvocation(BaseInvocation, WithMetadata, WithBoard):
         return ImageOutput.build(image_dto)
 
 
-@invocation("monochrome_film_grain", title="MonochromeFilmGrain", tags=["film_grain", "monochrome"], version="1.1.2")
+@invocation("monochrome_film_grain", title="MonochromeFilmGrain", tags=["film_grain", "monochrome"], version="1.1.3")
 class MonochromeFilmGrainInvocation(BaseInvocation, WithMetadata, WithBoard):
     """Adds monochrome film grain to an image"""
 
-    image: ImageField = InputField(description="The image to add film grain to", default=None)
+    image: ImageField = InputField(description="The image to add film grain to")
     amount_1: int = InputField(ge=0, le=800, description="Amount of the first noise layer", default=100)
     amount_2: int = InputField(ge=0, le=800, description="Amount of the second noise layer", default=50)
     seed_1: Optional[int] = InputField(ge=0, le=SEED_MAX, description="The first seed to use (omit for random)")
