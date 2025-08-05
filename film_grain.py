@@ -41,13 +41,13 @@ class FilmGrainInvocation(BaseInvocation, WithMetadata, WithBoard):
         rng = np.random.default_rng(seed=self.seed_1 if self.seed_1 is not None else get_random_seed())
         noise_1 = rng.normal(0, 1, (image.size[1], image.size[0], 3)) * 127.5 * (self.amount_1 / 800.0)
         noise_1 = noise_1 + 127.5
-        noise_1 = Image.fromarray(noise_1.astype("uint8"), "RGB")
+        noise_1 = Image.fromarray(noise_1.astype("uint8"))
         noise_1 = noise_1.filter(ImageFilter.GaussianBlur(radius=self.blur_1))
 
         rng = np.random.default_rng(seed=self.seed_2 if self.seed_2 is not None else get_random_seed())
         noise_2 = rng.normal(0, 1, (image.size[1], image.size[0], 3)) * 127.5 * (self.amount_2 / 800.0)
         noise_2 = noise_2 + 127.5
-        noise_2 = Image.fromarray(noise_2.astype("uint8"), "RGB")
+        noise_2 = Image.fromarray(noise_2.astype("uint8"))
         noise_2 = noise_2.filter(ImageFilter.GaussianBlur(radius=self.blur_2))
 
         image = ImageChops.overlay(image, noise_1)
@@ -83,14 +83,14 @@ class MonochromeFilmGrainInvocation(BaseInvocation, WithMetadata, WithBoard):
         rng = np.random.default_rng(seed=self.seed_1 if self.seed_1 is not None else get_random_seed())
         noise_1 = rng.normal(0, 1, (image.size[1], image.size[0])) * 127.5 * (self.amount_1 / 800.0)
         noise_1 = noise_1 + 127.5
-        noise_1 = Image.fromarray(noise_1.astype("uint8"), "L")
+        noise_1 = Image.fromarray(noise_1.astype("uint8"))
         noise_1 = noise_1.filter(ImageFilter.GaussianBlur(radius=self.blur_1))
         noise_1 = noise_1.convert("RGB")
 
         rng = np.random.default_rng(seed=self.seed_2 if self.seed_2 is not None else get_random_seed())
         noise_2 = rng.normal(0, 1, (image.size[1], image.size[0])) * 127.5 * (self.amount_2 / 800.0)
         noise_2 = noise_2 + 127.5
-        noise_2 = Image.fromarray(noise_2.astype("uint8"), "L")
+        noise_2 = Image.fromarray(noise_2.astype("uint8"))
         noise_2 = noise_2.filter(ImageFilter.GaussianBlur(radius=self.blur_2))
         noise_2 = noise_2.convert("RGB")
 
